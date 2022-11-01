@@ -10,14 +10,13 @@ const { waffle, ethers } = require("hardhat");
 async function getBalance(address) {
   const balnceBigInt = await waffle.provider.getBalance(address);
   return ethers.utils.formatEther(balnceBigInt);
-
 }
 
 //log the list of balance of given list of address
 async function printBalances(addresses) {
   for (const address of addresses) {
     const balance = await getBalance(address);
-    console.log(`${address} is having ${balance}.`);
+    console.log(`${address} is having BAL:  ${balance}.`);
   }
 }
 async function main() {
@@ -25,13 +24,33 @@ async function main() {
   const [owner, tipper, tipper2] = await ethers.getSigners();
   const BuyMeCoffee = await ethers.getContractFactory("BuyMeCoffee");
   const buyMeCoffee = await BuyMeCoffee.deploy();
-  console.log(`deployed contract address is ${buyMeCoffee.address}`);
+  console.log(`deployed contract address is ${buyMeCoffee.address}.`);
 
-  //print account
-  const accounts = [owner.address , tipper.address, tipper2.address];
+  //check balance before coffee purchase
+  const accounts = [owner.address, tipper.address, tipper2.address];
   await printBalances(accounts);
 
+  //buy owner a coffee
+  const tip = { value: ethers.utils.parseEther("1") };
+  console.log("===Buying Coffee===");
+  await buyMeCoffee
+    .connect(tipper)
+    .buyCoffee("ashraf", "we love ashraf!!", tip);
+  await buyMeCoffee
+    .connect(tipper2)
+    .buyCoffee("sahil", "awesome teacher!!", tip);
 
+  //print balance after tip
+  await printBalances(accounts);
+
+  //check contract balance
+  console.log("=== Contract Balance ===");
+  console.log(`Balance :  `, await getBalance(buyMeCoffee.address));
+
+  //withdraw tip
+  console.log("=== Withdrawing Tip ===");
+  await buyMeCoffee.connect(owner).withdraw();
+  await printBalances(accounts);
 
 }
 
