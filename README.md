@@ -1,6 +1,8 @@
-# Sample Hardhat Project
+# Buy Me A Coffee
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+website : https://buymecoffee-solidity-defi.ashraf-khan1.repl.co
+contract address : 0x19d4E72188DC450410953198b1e23B0eb5fBF352
+Chain : Goerli Testnet
 
 Try running some of the following tasks:
 
